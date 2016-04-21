@@ -5,7 +5,9 @@ Easily create Mob Arena join and Exit signs! Spigot 1.9, 1.8
 Allows the creation of two signs:
 
 [Join Arena]
+
 Arena Name
+
 
 and
 
