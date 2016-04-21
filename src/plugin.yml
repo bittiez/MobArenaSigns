@@ -1,0 +1,11 @@
+name: MobArenaSigns
+version: 1.0.0
+author: bittiez
+main: US.bittiez.MobArenaSigns.main
+permissions:
+    MAS.use:
+        description: Allow use of a MAS sign.
+        default: true
+    MAS.create:
+        description: Allows creating MAS signs.
+        default: op
