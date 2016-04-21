@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -36,6 +37,7 @@ public class main extends JavaPlugin implements Listener {
      */
     private String joinTitle = "[Join Arena]";
     private String exitTitle = "[Exit Arena]";
+    private ChatColor titleColor = ChatColor.DARK_PURPLE;
 
 
 
@@ -62,13 +64,26 @@ public class main extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void main(SignChangeEvent event){
+        Player who = event.getPlayer();
         Block block = event.getBlock();
-        Sign sign = (Sign)event.getBlock().getState();
-        if(isMASSign(sign, true)){
-            if(event.getPlayer().hasPermission("MAS.create")){
-                signData.set(block.getX() + "" + block.getY() + "" + block.getZ(), "MAS SIGN");
-                saveSignData();
-                event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6MAS &3Sign created successfully!"));
+        if(!event.isCancelled()){
+            if(event.getLine(SIGNLINES.TITLE).equalsIgnoreCase(joinTitle) || event.getLine(SIGNLINES.TITLE).equalsIgnoreCase(exitTitle)) {
+                int signType;
+                if(event.getLine(SIGNLINES.TITLE).equalsIgnoreCase(joinTitle))
+                    signType = SIGNTYPE.JOIN;
+                else
+                    signType = SIGNTYPE.EXIT;
+
+                if (who.hasPermission("MAS.create")) {
+                    if(signType == SIGNTYPE.JOIN)
+                        event.setLine(SIGNLINES.TITLE, titleColor + joinTitle);
+                    else
+                        event.setLine(SIGNLINES.TITLE, titleColor + exitTitle);
+                    signData.set(block.getX() + "" + block.getY() + "" + block.getZ(), "MAS SIGN");
+                    saveSignData();
+                    who.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6MAS &3Sign created successfully!"));
+                } else
+                    who.sendMessage("You do not have permission to create Mob Arena Signs!");
             }
         }
     }
@@ -97,10 +112,10 @@ public class main extends JavaPlugin implements Listener {
                     String arena = sign.getLine(SIGNLINES.ARENA);
                     String title = sign.getLine(SIGNLINES.TITLE);
 
-                    if(title.equals(joinTitle))
+                    if(title.equals(titleColor + joinTitle))
                         if(arena != null && !arena.isEmpty())
                             event.getPlayer().performCommand("ma join " + arena);
-                    if(title.equals(exitTitle))
+                    if(title.equals(titleColor + exitTitle))
                         event.getPlayer().performCommand("ma leave");
                 }
             }
@@ -117,17 +132,14 @@ public class main extends JavaPlugin implements Listener {
 
      */
     private boolean isMASSign(Sign sign){
-        return isMASSign(sign, false);
-    }
-    private boolean isMASSign(Sign sign, boolean newCheck){
         String title = sign.getLine(SIGNLINES.TITLE);
         String arena = sign.getLine(SIGNLINES.ARENA);
         boolean isMAS = false;
 
-        if(title.equals(joinTitle) || title.equals(exitTitle)){
+        if(title.equals(titleColor + joinTitle) || title.equals( titleColor + exitTitle)){
             isMAS = true;
             Block signBlock = sign.getBlock();
-            if(!newCheck && signData.getString(signBlock.getX() + "" + signBlock.getY() + "" + signBlock.getZ()) == null){
+            if(signData.getString(signBlock.getX() + "" + signBlock.getY() + "" + signBlock.getZ()) == null){
                 isMAS = false;
             }
         }
