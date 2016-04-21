@@ -9,3 +9,6 @@ permissions:
     MAS.create:
         description: Allows creating MAS signs.
         default: op
+    MAS.break:
+        description: Allows breaking of MAS signs.
+        default: op
