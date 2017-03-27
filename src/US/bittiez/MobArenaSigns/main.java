@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -23,10 +24,10 @@ public class main extends JavaPlugin implements Listener {
     private static FileConfiguration signData;
     private static Logger log;
     private static String signFileYml = "signData.yml";
-
     private String joinTitle = "[Join Arena]";
     private String exitTitle = "[Exit Arena]";
     private ChatColor titleColor = ChatColor.DARK_PURPLE;
+    private boolean hasUpdate = false;
 
     @Override
     public void onEnable() {
@@ -35,15 +36,27 @@ public class main extends JavaPlugin implements Listener {
 
         UpdateChecker updater = new UpdateChecker("https://github.com/bittiez/MobArenaSigns/raw/master/src/plugin.yml", getDescription().getVersion());
         if(!updater.IsUpToDate()){
+            hasUpdate = true;
             log.warning("[Mob Arena Signs] has an update! Check it out at https://github.com/bittiez/MobArenaSigns/releases or https://www.spigotmc.org/resources/mobarena-signs.37001/");
         }
 
         getServer().getPluginManager().registerEvents(this, this);
     }
 
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event){
+        if(hasUpdate) {
+            for (Player player : getServer().getOnlinePlayers()) {
+                if (player.isOp() || player.hasPermission("MAS.create")) {
+                    player.sendMessage(
+                            ChatColor.GOLD + "[Mob Arena Signs] has an update! Check it out at https://github.com/bittiez/MobArenaSigns/releases or https://www.spigotmc.org/resources/mobarena-signs.37001/");
+                }
+            }
+        }
+    }
 
     @EventHandler
-    public void main(SignChangeEvent event) {
+    public void onSignChange(SignChangeEvent event) {
         Player who = event.getPlayer();
         Block block = event.getBlock();
         if (!event.isCancelled()) {
