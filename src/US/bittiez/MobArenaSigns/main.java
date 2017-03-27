@@ -1,5 +1,6 @@
 package US.bittiez.MobArenaSigns;
 
+import US.bittiez.UtilityAPI.UpdateChecker;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -31,6 +32,11 @@ public class main extends JavaPlugin implements Listener {
     public void onEnable() {
         log = getLogger();
         loadSignData();
+
+        UpdateChecker updater = new UpdateChecker("https://github.com/bittiez/MobArenaSigns/raw/master/src/plugin.yml", getDescription().getVersion());
+        if(!updater.IsUpToDate()){
+            log.warning("[Mob Arena Signs] has an update! Check it out at https://github.com/bittiez/MobArenaSigns/releases or https://www.spigotmc.org/resources/mobarena-signs.37001/");
+        }
 
         getServer().getPluginManager().registerEvents(this, this);
     }

@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/MobArenaSigns_jar</output-path>
     <root id="archive" name="MobArenaSigns.jar">
       <element id="module-output" name="MobArenaSigns" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/reqlibs/UtilityAPI.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
