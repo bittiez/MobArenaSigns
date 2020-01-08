@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -78,7 +77,7 @@ public class main extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void main(PlayerInteractEvent event) {
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         if (block != null && block.getState() instanceof Sign) {
             Sign sign = (Sign) block.getState();
